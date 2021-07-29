@@ -1,0 +1,31 @@
+GET https://jsonplaceholder.typicode.com/posts/
+
+###
+GET http://localhost:3000/api/villains
+
+###
+DELETE http://localhost:3000/api/villains/60fc10e87b929e98490fe8cc
+
+###
+POST http://localhost:3000/api/villains
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "knownAs": "JD",
+  "house": "Florida"
+}
+
+###
+PUT http://localhost:3000/api/villains/610123aeeb4205fa07a2f2d8
+Content-Type: application/json
+
+{
+  "id": "47b647c5-cd8e-45f0-a21b-6319efe9d4c1",
+  "firstName": "John - Updated",
+  "lastName": "Doe - Updated",
+  "knownAs": "JD - Updated",
+  "house": "Florida - Updated"
+}
+
