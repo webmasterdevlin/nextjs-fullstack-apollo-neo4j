@@ -3,5 +3,7 @@
 ## Database
 Neo4j
 
+### environment variables storage
+.env.local
 
 ![screenshot](./screenshot.png)

@@ -1,5 +1,14 @@
 module.exports = {
   reactStrictMode: true,
-  MONGODB_URI:
-    "mongodb+srv://webmasterdevlin:Pass123!@cluster0.5upod.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+  serverRuntimeConfig: {
+    // Will only be available on the server side
+    neo4j: {
+      uri: process.env.NEO4j_URI,
+      user: process.env.NEO4j_USER,
+      password: process.env.NEO4j_PASSWORD,
+    },
+  },
+  publicRuntimeConfig: {
+    // Will be available on both server and client
+  },
 };

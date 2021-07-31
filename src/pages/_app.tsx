@@ -1,7 +1,7 @@
 import "src/styles/globals.css";
 import React from "react";
 import App from "next/app";
-import RootStore from "src/store/rootStore";
+
 import { CssBaseline, ThemeProvider } from "@material-ui/core";
 
 import NavigationBar from "src/components/NavigationBar";
@@ -20,14 +20,12 @@ class MyApp extends App<Props> {
     let { Component, pageProps } = this.props;
 
     return (
-      <RootStore>
-        <ThemeProvider theme={theme}>
-          <CssBaseline>
-            <NavigationBar />
-            <Component {...pageProps} />
-          </CssBaseline>
-        </ThemeProvider>
-      </RootStore>
+      <ThemeProvider theme={theme}>
+        <CssBaseline>
+          <NavigationBar />
+          <Component {...pageProps} />
+        </CssBaseline>
+      </ThemeProvider>
     );
   }
 }

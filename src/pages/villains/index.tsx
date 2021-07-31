@@ -1,6 +1,5 @@
 import React, { useEffect, useContext, useState } from "react";
-import { observer } from "mobx-react-lite";
-import { RootStoreContext } from "src/store/rootStore";
+
 import TitleBar from "src/components/TitleBar";
 import UpdateUiLabel from "src/components/UpdateUiLabel";
 import FormSubmission from "src/components/FormSubmission";
@@ -14,31 +13,25 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
-const VillainsPage = observer(() => {
-  const { villainStore } = useContext(RootStoreContext);
-
+const VillainsPage = () => {
   const smallScreen = useMediaQuery("(max-width:600px)");
   const classes = useStyles();
 
   /*local state*/
   const [counter, setCounter] = useState("0");
 
-  useEffect(() => {
-    villainStore.getVillainsAction();
-  }, []);
-
   return (
-    <Layout title={"Next Mobx - Anti Villains Page"}>
+    <Layout title={"Next Mobx - Villains Page"}>
       <TitleBar title={"Super Villains Page"} />
-      <FormSubmission postAction={villainStore.postVillainAction} />
+      {/*<FormSubmission postAction={villainStore.postVillainAction} />*/}
       <UpdateUiLabel />
       <>
-        {villainStore.loading ? (
+        {false ? (
           <Typography data-testid="loading" variant={"h2"}>
             Loading.. Please wait..
           </Typography>
         ) : (
-          villainStore.villains.map((v) => (
+          []?.map((v) => (
             <Box
               mb={2}
               key={v._id}
@@ -67,7 +60,6 @@ const VillainsPage = observer(() => {
                   className={classes.button}
                   variant={"contained"}
                   color={"secondary"}
-                  onClick={() => villainStore.softDeleteVillainAction(v)}
                   data-testid={"remove-button"}
                 >
                   Remove
@@ -76,9 +68,6 @@ const VillainsPage = observer(() => {
                   className={classes.button}
                   variant={"outlined"}
                   color={"primary"}
-                  onClick={async () =>
-                    await villainStore.deleteVillainAction(v._id)
-                  }
                   data-testid={"delete-button"}
                 >
                   DELETE in DB
@@ -88,20 +77,19 @@ const VillainsPage = observer(() => {
           ))
         )}
       </>
-      {villainStore.villains.length === 0 && !villainStore.loading && (
-        <Button
-          data-testid={"refetch-button"}
-          className={classes.button}
-          variant={"contained"}
-          color={"primary"}
-          onClick={villainStore.getVillainsAction}
-        >
-          Re-fetch
-        </Button>
-      )}
+      {/*{villainStore.villains.length === 0 && !villainStore.loading && (*/}
+      {/*  <Button*/}
+      {/*    data-testid={"refetch-button"}*/}
+      {/*    className={classes.button}*/}
+      {/*    variant={"contained"}*/}
+      {/*    color={"primary"}*/}
+      {/*  >*/}
+      {/*    Re-fetch*/}
+      {/*  </Button>*/}
+      {/*)}*/}
     </Layout>
   );
-});
+};
 
 export default VillainsPage;
 

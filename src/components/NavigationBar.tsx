@@ -1,16 +1,11 @@
-import React, { useContext } from "react";
-import { RootStoreContext } from "src/store/rootStore";
-import { observer } from "mobx-react-lite";
+import React from "react";
 import { makeStyles } from "@material-ui/styles";
 import { AppBar, Box, createStyles, Link, Toolbar } from "@material-ui/core";
 
 import TotalOfCharacters from "./TotalOfCharacters";
 
-const NavigationBar = observer(() => {
+const NavigationBar = () => {
   const classes = useStyles();
-
-  const { antiHeroStore, heroStore, villainStore } =
-    useContext(RootStoreContext);
 
   return (
     <AppBar position="static" style={{ marginBottom: "2rem" }}>
@@ -29,10 +24,10 @@ const NavigationBar = observer(() => {
           >
             Anti Heroes
           </Link>
-          <TotalOfCharacters
-            total={antiHeroStore.totalAntiHeroesCount}
-            dataTestId={"total-anti-heroes"}
-          />
+          {/*<TotalOfCharacters*/}
+          {/*  total={antiHeroStore.totalAntiHeroesCount}*/}
+          {/*  dataTestId={"total-anti-heroes"}*/}
+          {/*/>*/}
         </Box>
         <Box>
           <Link
@@ -43,10 +38,10 @@ const NavigationBar = observer(() => {
           >
             Heroes
           </Link>
-          <TotalOfCharacters
-            total={heroStore.totalHeroesCount}
-            dataTestId={"total-heroes"}
-          />
+          {/*<TotalOfCharacters*/}
+          {/*  total={heroStore.totalHeroesCount}*/}
+          {/*  dataTestId={"total-heroes"}*/}
+          {/*/>*/}
         </Box>
         <Box>
           <Link
@@ -57,15 +52,15 @@ const NavigationBar = observer(() => {
           >
             Villains
           </Link>
-          <TotalOfCharacters
-            total={villainStore.totalVillainsCount}
-            dataTestId={"total-villains"}
-          />
+          {/*<TotalOfCharacters*/}
+          {/*  total={villainStore.totalVillainsCount}*/}
+          {/*  dataTestId={"total-villains"}*/}
+          {/*/>*/}
         </Box>
       </Toolbar>
     </AppBar>
   );
-});
+};
 
 export default NavigationBar;
 

@@ -1,6 +1,4 @@
 import React, { useEffect, useContext, useState } from "react";
-import { observer } from "mobx-react-lite";
-import { RootStoreContext } from "src/store/rootStore";
 import TitleBar from "src/components/TitleBar";
 import UpdateUiLabel from "src/components/UpdateUiLabel";
 import FormSubmission from "src/components/FormSubmission";
@@ -14,31 +12,25 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
-const HeroesPage = observer(() => {
-  const { heroStore } = useContext(RootStoreContext);
-
+const HeroesPage = () => {
   const smallScreen = useMediaQuery("(max-width:600px)");
   const classes = useStyles();
 
   /*local state*/
   const [counter, setCounter] = useState("0");
 
-  useEffect(() => {
-    heroStore.getHeroesAction();
-  }, []);
-
   return (
     <Layout title={"Next Mobx - Anti Heroes Page"}>
       <TitleBar title={"Super Heroes Page"} />
-      <FormSubmission postAction={heroStore.postHeroAction} />
+      {/*<FormSubmission postAction={heroStore.postHeroAction} />*/}
       <UpdateUiLabel />
       <>
-        {heroStore.loading ? (
+        {false ? (
           <Typography data-testid="loading" variant={"h2"}>
             Loading.. Please wait..
           </Typography>
         ) : (
-          heroStore.heroes.map((h) => (
+          []?.map((h) => (
             <Box
               mb={2}
               key={h._id}
@@ -67,7 +59,6 @@ const HeroesPage = observer(() => {
                   className={classes.button}
                   variant={"contained"}
                   color={"secondary"}
-                  onClick={() => heroStore.softDeleteHeroAction(h)}
                   data-testid={"remove-button"}
                 >
                   Remove
@@ -76,7 +67,6 @@ const HeroesPage = observer(() => {
                   className={classes.button}
                   variant={"outlined"}
                   color={"primary"}
-                  onClick={async () => await heroStore.deleteHeroAction(h._id)}
                   data-testid={"delete-button"}
                 >
                   DELETE in DB
@@ -86,20 +76,20 @@ const HeroesPage = observer(() => {
           ))
         )}
       </>
-      {heroStore.heroes.length === 0 && !heroStore.loading && (
-        <Button
-          data-testid={"refetch-button"}
-          className={classes.button}
-          variant={"contained"}
-          color={"primary"}
-          onClick={heroStore.getHeroesAction}
-        >
-          Re-fetch
-        </Button>
-      )}
+      {/*{heroStore.heroes.length === 0 && !heroStore.loading && (*/}
+      {/*  <Button*/}
+      {/*    data-testid={"refetch-button"}*/}
+      {/*    className={classes.button}*/}
+      {/*    variant={"contained"}*/}
+      {/*    color={"primary"}*/}
+      {/*    onClick={heroStore.getHeroesAction}*/}
+      {/*  >*/}
+      {/*    Re-fetch*/}
+      {/*  </Button>*/}
+      {/*)}*/}
     </Layout>
   );
-});
+};
 
 export default HeroesPage;
 

@@ -10,6 +10,7 @@ specifiers:
   '@types/cors': ^2.8.12
   '@types/react': 17.0.14
   '@types/yup': ^0.29.13
+  apollo-server-core: ^3.0.2
   apollo-server-micro: ^3.0.2
   axios: ^0.21.1
   cors: ^2.8.5
@@ -24,6 +25,7 @@ specifiers:
   prettier: ^2.3.2
   react: 17.0.2
   react-dom: 17.0.2
+  ts-tiny-invariant: ^0.0.3
   typescript: 4.3.5
   yup: ^0.32.9
 
@@ -34,6 +36,7 @@ dependencies:
   '@material-ui/pickers': 3.3.10_f5faf4404c6c7ccd77a2758a2e986c45
   '@material-ui/styles': 4.11.4_28c0df05a9559c3217649c6005b51123
   '@neo4j/graphql': 1.2.4_cec0be8e41210e477a95d575eb6b7f75
+  apollo-server-core: 3.0.2_graphql@15.5.1
   apollo-server-micro: 3.0.2_graphql@15.5.1+micro@9.3.4
   axios: 0.21.1
   cors: 2.8.5
@@ -45,6 +48,7 @@ dependencies:
   next-connect: 0.10.1
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
+  ts-tiny-invariant: 0.0.3
   yup: 0.32.9
 
 devDependencies:
@@ -761,7 +765,7 @@ packages:
     peerDependencies:
       graphql: ^14.2.1 || ^15.0.0
     dependencies:
-      core-js-pure: 3.15.2
+      core-js-pure: 3.16.0
       graphql: 15.5.1
       lodash.sortby: 4.7.0
       sha.js: 2.4.11
@@ -1269,6 +1273,12 @@ packages:
   /core-js-pure/3.15.2:
     resolution: {integrity: sha512-D42L7RYh1J2grW8ttxoY1+17Y4wXZeKe7uyplAI3FkNQyI5OgBIAjUfFiTPfL1rs0qLpxaabITNbjKl1Sp82tA==}
     requiresBuild: true
+    dev: true
+
+  /core-js-pure/3.16.0:
+    resolution: {integrity: sha512-wzlhZNepF/QA9yvx3ePDgNGudU5KDB8lu/TRPKelYA/QtSnkS/cLl2W+TIdEX1FAFcBr0YpY7tPDlcmXJ7AyiQ==}
+    requiresBuild: true
+    dev: false
 
   /core-util-is/1.0.2:
     resolution: {integrity: sha1-tf1UIgqivFq1eqtxQMlAdUUDwac=}
@@ -2713,7 +2723,7 @@ packages:
   /lower-case/2.0.2:
     resolution: {integrity: sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==}
     dependencies:
-      tslib: 2.2.0
+      tslib: 2.3.0
     dev: false
 
   /lru-cache/6.0.0:
@@ -2941,7 +2951,7 @@ packages:
     resolution: {integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==}
     dependencies:
       lower-case: 2.0.2
-      tslib: 2.2.0
+      tslib: 2.3.0
     dev: false
 
   /node-fetch/2.6.1:
@@ -3162,7 +3172,7 @@ packages:
     resolution: {integrity: sha512-uWlGT3YSnK9x3BQJaOdcZwrnV6hPpd8jFH1/ucpiLRPh/2zCVJKS19E4GvYHvaCcACn3foXZ0cLB9Wrx1KGe5g==}
     dependencies:
       no-case: 3.0.4
-      tslib: 2.2.0
+      tslib: 2.3.0
     dev: false
 
   /path-browserify/0.0.1:
@@ -3962,6 +3972,10 @@ packages:
         optional: true
     dependencies:
       typescript: 4.3.5
+    dev: false
+
+  /ts-tiny-invariant/0.0.3:
+    resolution: {integrity: sha512-EiaBUsUta7PPzVKpvZurcSDgaSkymxwiUc2rhX6Wu30bws2maipT6ihbEY072dU9lz6/FoFWEc6psXdlo0xqtg==}
     dev: false
 
   /tsconfig-paths/3.10.1:

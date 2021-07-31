@@ -1,6 +1,4 @@
 import React, { useEffect, useContext, useState } from "react";
-import { observer } from "mobx-react-lite";
-import { RootStoreContext } from "src/store/rootStore";
 import TitleBar from "src/components/TitleBar";
 import UpdateUiLabel from "src/components/UpdateUiLabel";
 import FormSubmission from "src/components/FormSubmission";
@@ -14,31 +12,25 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
-const AntiHeroesPage = observer(() => {
-  const { antiHeroStore } = useContext(RootStoreContext);
-
+const AntiHeroesPage = () => {
   const smallScreen = useMediaQuery("(max-width:600px)");
   const classes = useStyles();
 
   /*local state*/
   const [counter, setCounter] = useState("0");
 
-  useEffect(() => {
-    antiHeroStore.getAntiHeroesAction();
-  }, []);
-
   return (
     <Layout title={"Next Mobx - Anti Heroes Page"}>
       <TitleBar title={"Anti-Heroes Page"} />
-      <FormSubmission postAction={antiHeroStore.postAntiHeroAction} />
+      {/*<FormSubmission postAction={antiHeroStore.postAntiHeroAction} />*/}
       <UpdateUiLabel />
       <>
-        {antiHeroStore.loading ? (
+        {false ? (
           <Typography data-testid="loading" variant={"h2"}>
             Loading.. Please wait..
           </Typography>
         ) : (
-          antiHeroStore.antiHeroes.map((ah) => (
+          []?.map((ah) => (
             <Box
               mb={2}
               key={ah._id}
@@ -56,7 +48,6 @@ const AntiHeroesPage = observer(() => {
               <div>
                 <Button
                   className={classes.button}
-                  onClick={() => setCounter(ah._id)}
                   variant={"contained"}
                   color={"default"}
                   data-testid={"mark-button"}
@@ -67,7 +58,6 @@ const AntiHeroesPage = observer(() => {
                   className={classes.button}
                   variant={"contained"}
                   color={"secondary"}
-                  onClick={() => antiHeroStore.softDeleteAntiHeroAction(ah)}
                   data-testid={"remove-button"}
                 >
                   Remove
@@ -76,9 +66,6 @@ const AntiHeroesPage = observer(() => {
                   className={classes.button}
                   variant={"outlined"}
                   color={"primary"}
-                  onClick={async () =>
-                    await antiHeroStore.deleteAntiHeroAction(ah._id)
-                  }
                   data-testid={"delete-button"}
                 >
                   DELETE in DB
@@ -88,20 +75,20 @@ const AntiHeroesPage = observer(() => {
           ))
         )}
       </>
-      {antiHeroStore.antiHeroes.length === 0 && !antiHeroStore.loading && (
-        <Button
-          data-testid={"refetch-button"}
-          className={classes.button}
-          variant={"contained"}
-          color={"primary"}
-          onClick={antiHeroStore.getAntiHeroesAction}
-        >
-          Re-fetch
-        </Button>
-      )}
+      {/*{antiHeroStore.antiHeroes.length === 0 && !antiHeroStore.loading && (*/}
+      {/*  <Button*/}
+      {/*    data-testid={"refetch-button"}*/}
+      {/*    className={classes.button}*/}
+      {/*    variant={"contained"}*/}
+      {/*    color={"primary"}*/}
+      {/*    onClick={antiHeroStore.getAntiHeroesAction}*/}
+      {/*  >*/}
+      {/*    Re-fetch*/}
+      {/*  </Button>*/}
+      {/*)}*/}
     </Layout>
   );
-});
+};
 
 export default AntiHeroesPage;
 
