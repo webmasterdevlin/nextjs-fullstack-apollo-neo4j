@@ -1,6 +1,6 @@
 import { gql, ApolloServer } from "apollo-server-micro";
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
-import neo4j from "neo4j-driver";
+import neo4j, { error } from "neo4j-driver";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import getConfig from "next/config";
 import "ts-tiny-invariant";
@@ -32,11 +32,31 @@ const typeDefs = gql`
 
   type Mutation {
     createHero(
-      firstName: String!
-      lastName: String!
+      firstName: String
+      lastName: String
       knownAs: String!
       house: String!
     ): Hero!
+
+    createAntiHero(
+      firstName: String
+      lastName: String
+      knownAs: String!
+      house: String!
+    ): AntiHero!
+
+    createVillain(
+      firstName: String
+      lastName: String
+      knownAs: String!
+      house: String!
+    ): Villain!
+
+    deleteHeroById(id: ID!): Hero
+
+    deleteAntiHeroById(id: ID!): AntiHero
+
+    deleteVillainById(id: ID!): Villain
   }
 `;
 
@@ -45,18 +65,10 @@ const resolvers = {
     createHero: (obj, args, context, info) => {
       const session = context.driver.session();
 
-      return {
-        id: "49tgfailugfayhgygr32",
-        firstName: "Devlin",
-        lastName: "D.",
-        knownAs: "Dev",
-        house: "none",
-      };
-
       return session
         .run(
           `
-        CREATE (h:Hero) SET u += $args, h.id = randomUUID()
+        CREATE (h:Hero) SET h += $args, h.id = randomUUID()
         RETURN h
       `,
           { args }
@@ -64,6 +76,122 @@ const resolvers = {
         .then((res) => {
           session.close();
           return res.records[0].get("h").properties;
+        })
+        .catch((error) => {
+          console.log(error);
+          return {
+            message: error.message,
+          };
+        });
+    },
+    createAntiHero: (obj, args, context, info) => {
+      const session = context.driver.session();
+
+      return session
+        .run(
+          `
+        CREATE (ah:AntiHero) SET ah += $args, ah.id = randomUUID()
+        RETURN ah
+      `,
+          { args }
+        )
+        .then((res) => {
+          session.close();
+          return res.records[0].get("ah").properties;
+        })
+        .catch((error) => {
+          console.log(error);
+          return {
+            message: error.message,
+          };
+        });
+    },
+    createVillain: (obj, args, context, info) => {
+      const session = context.driver.session();
+
+      return session
+        .run(
+          `
+        CREATE (v:Villain) SET v += $args, v.id = randomUUID()
+        RETURN v
+      `,
+          { args }
+        )
+        .then((res) => {
+          session.close();
+          return res.records[0].get("v").properties;
+        })
+        .catch((error) => {
+          console.log(error);
+          return {
+            message: error.message,
+          };
+        });
+    },
+    deleteHeroById: (obj, args, context, info) => {
+      const session = context.driver.session();
+
+      return session
+        .run(
+          `
+        MATCH (n {id: $args.id})
+        DETACH DELETE n
+      `,
+          { args }
+        )
+        .then(() => {
+          session.close();
+          return null;
+        })
+        .catch((error) => {
+          console.log(error);
+          return {
+            message: error.message,
+          };
+        });
+    },
+    deleteAntiHeroById: (obj, args, context, info) => {
+      const session = context.driver.session();
+
+      return session
+        .run(
+          `
+        MATCH (n {id: $args.id})
+        DETACH DELETE n
+      `,
+          { args }
+        )
+        .then(() => {
+          session.close();
+          return null;
+        })
+        .catch((error) => {
+          console.log(error);
+          return {
+            message: error.message,
+          };
+        });
+    },
+    deleteVillainById: (obj, args, context, info) => {
+      const session = context.driver.session();
+
+      return session
+        .run(
+          `
+        MATCH (n {id: $args.id})
+        DETACH DELETE n
+      `,
+          { args }
+        )
+        .then(() => {
+          session.close();
+          return null;
+        })
+        .catch((error) => {
+          console.log(error);
+          return {
+            message: error.message,
+          };
         });
     },
   },
