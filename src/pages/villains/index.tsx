@@ -91,6 +91,14 @@ const VillainsPage = () => {
   );
 };
 
+export async function getStaticProps() {
+  return {
+    props: {
+      villains: [],
+    },
+  };
+}
+
 export default VillainsPage;
 
 const useStyles = makeStyles(() =>

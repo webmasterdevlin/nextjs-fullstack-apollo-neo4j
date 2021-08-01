@@ -91,6 +91,14 @@ const HeroesPage = () => {
   );
 };
 
+export async function getStaticProps() {
+  return {
+    props: {
+      heroes: [],
+    },
+  };
+}
+
 export default HeroesPage;
 
 const useStyles = makeStyles(() =>

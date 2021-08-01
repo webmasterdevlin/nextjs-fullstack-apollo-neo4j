@@ -7,6 +7,29 @@ import { CssBaseline, ThemeProvider } from "@material-ui/core";
 import NavigationBar from "src/components/NavigationBar";
 import theme from "src/styles/theme";
 
+import { ApolloClient, ApolloProvider, gql } from "@apollo/client";
+import { cache } from "../cache";
+
+const client = new ApolloClient({
+  cache: cache,
+  uri: "http://localhost:3000/api/graphql",
+  resolvers: {},
+});
+
+client
+  .query({
+    query: gql`
+      query GET_HEROES {
+        heroes {
+          id
+          knownAs
+          house
+        }
+      }
+    `,
+  })
+  .then((res) => console.log(JSON.stringify(res, null, 2)));
+
 type Props = {
   Component: React.Component;
 };
@@ -20,12 +43,14 @@ class MyApp extends App<Props> {
     let { Component, pageProps } = this.props;
 
     return (
-      <ThemeProvider theme={theme}>
-        <CssBaseline>
-          <NavigationBar />
-          <Component {...pageProps} />
-        </CssBaseline>
-      </ThemeProvider>
+      <ApolloProvider client={client}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline>
+            <NavigationBar />
+            <Component {...pageProps} />
+          </CssBaseline>
+        </ThemeProvider>
+      </ApolloProvider>
     );
   }
 }

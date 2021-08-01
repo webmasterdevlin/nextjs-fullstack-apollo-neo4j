@@ -90,6 +90,14 @@ const AntiHeroesPage = () => {
   );
 };
 
+export async function getStaticProps() {
+  return {
+    props: {
+      antiHeroes: [],
+    },
+  };
+}
+
 export default AntiHeroesPage;
 
 const useStyles = makeStyles(() =>
