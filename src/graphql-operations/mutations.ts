@@ -51,7 +51,7 @@ export const CREATE_VILLAIN = gql`
     $knownAs: String!
     $house: String!
   ) {
-    create(
+    createVillain(
       firstName: $firstName
       lastName: $lastName
       knownAs: $knownAs
