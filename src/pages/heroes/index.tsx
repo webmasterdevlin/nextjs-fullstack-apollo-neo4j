@@ -29,21 +29,23 @@ const HeroesPage = () => {
   /*local state*/
   const [counter, setCounter] = useState("0");
 
+  /*Apollo Client hooks*/
   const { loading, data, fetchMore } = useQuery<HeroesData>(GET_HEROES);
   const [removeHero] = useMutation<void>(DELETE_ANTI_HERO_BY_ID);
   const [addHero] = useMutation<{ createHero: Hero }>(CREATE_HERO);
 
   const handleCreate = async (hero: Hero) => {
     await addHero({
-      variables: { ...hero },
+      variables: hero,
       update: (apolloCache, { data: response }) => {
-        const data = apolloCache.readQuery<HeroesData>({
+        const { heroes } = apolloCache.readQuery<HeroesData>({
           query: GET_HEROES,
         });
+
         cache.writeQuery({
           query: GET_HEROES,
           data: {
-            heroes: [...data.heroes, response.createHero],
+            heroes: [...heroes, response.createHero],
           },
         });
       },
@@ -54,18 +56,14 @@ const HeroesPage = () => {
     await removeHero({
       variables: { id },
       update: (apolloCache) => {
-        const data = apolloCache.readQuery<HeroesData>({
+        const { heroes } = apolloCache.readQuery<HeroesData>({
           query: GET_HEROES,
         });
-        let newData: HeroesData = {
-          heroes: [],
-        };
-        newData.heroes = data?.heroes?.filter((hero) => hero.id != id);
 
         cache.writeQuery({
           query: GET_HEROES,
           data: {
-            heroes: [...newData.heroes],
+            heroes: heroes.filter((hero) => hero.id != id),
           },
         });
       },
@@ -73,15 +71,22 @@ const HeroesPage = () => {
   };
 
   const handleSoftDelete = (id: string) => {
-    const data = cache.readQuery<HeroesData>({
+    const { heroes } = cache.readQuery<HeroesData>({
       query: GET_HEROES,
     });
-    let newData: HeroesData = {
-      heroes: [],
-    };
-    newData.heroes = data?.heroes?.filter((hero) => hero.id != id);
-    cache.writeQuery({ query: GET_HEROES, data: newData });
+
+    cache.writeQuery({
+      query: GET_HEROES,
+      data: {
+        heroes: heroes.filter((hero) => hero.id != id),
+      },
+    });
   };
+
+  const refetch = async () =>
+    await fetchMore({
+      query: GET_HEROES,
+    });
 
   return (
     <Layout title={"Next Apollo Client - Heroes Page"}>
@@ -148,11 +153,7 @@ const HeroesPage = () => {
           className={classes.button}
           variant={"contained"}
           color={"primary"}
-          onClick={async () =>
-            await fetchMore({
-              query: GET_HEROES,
-            })
-          }
+          onClick={refetch}
         >
           Re-fetch
         </Button>
