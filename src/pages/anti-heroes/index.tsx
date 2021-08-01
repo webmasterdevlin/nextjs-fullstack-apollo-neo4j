@@ -33,7 +33,7 @@ const AntiHeroesPage = () => {
   const { loading, data, fetchMore } =
     useQuery<AntiHeroesData>(GET_ANTI_HEROES);
   const [removeHero] = useMutation<void>(DELETE_ANTI_HERO_BY_ID);
-  const [addHero] = useMutation<{ createHero: AntiHero }>(CREATE_ANTI_HERO);
+  const [addHero] = useMutation<{ createAntiHero: AntiHero }>(CREATE_ANTI_HERO);
 
   const handleCreate = async (antiHero: AntiHero) => {
     await addHero({
@@ -46,7 +46,7 @@ const AntiHeroesPage = () => {
         cache.writeQuery({
           query: GET_ANTI_HEROES,
           data: {
-            antiHeroes: [...antiHeroes, response.createHero],
+            antiHeroes: [...antiHeroes, response.createAntiHero],
           },
         });
       },
