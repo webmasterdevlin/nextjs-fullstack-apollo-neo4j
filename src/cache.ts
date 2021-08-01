@@ -8,28 +8,28 @@ export const cache: InMemoryCache = new InMemoryCache({
     Query: {
       fields: {
         heroes: {
-          merge(existing, incoming) {
-            return incoming;
-          },
-          // read() {
+          // read(existing, incoming) {
           //   return heroesVar();
           // },
+          merge(existing, incoming) {
+            return incoming;
+          },
         },
         villains: {
-          merge(existing, incoming) {
-            return incoming;
-          },
-          // read() {
+          // read(existing) {
           //   return villainsVar();
           // },
-        },
-        antiHeroes: {
           merge(existing, incoming) {
             return incoming;
           },
-          // read() {
+        },
+        antiHeroes: {
+          // read(existing) {
           //   return antiHeroesVar();
           // },
+          merge(existing, incoming) {
+            return incoming;
+          },
         },
       },
     },

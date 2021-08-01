@@ -31,7 +31,7 @@ const NavigationBar = () => {
             Anti Heroes
           </Link>
           <TotalOfCharacters
-            total={antiHeroesReactiveVar.antiHeroes.length}
+            total={antiHeroesReactiveVar?.antiHeroes?.length}
             dataTestId={"total-anti-heroes"}
           />
         </Box>
@@ -45,7 +45,7 @@ const NavigationBar = () => {
             Heroes
           </Link>
           <TotalOfCharacters
-            total={heroesReactiveVar.heroes.length}
+            total={heroesReactiveVar?.heroes?.length}
             dataTestId={"total-heroes"}
           />
         </Box>
@@ -59,7 +59,7 @@ const NavigationBar = () => {
             Villains
           </Link>
           <TotalOfCharacters
-            total={villainsReactiveVar.villains.length}
+            total={villainsReactiveVar?.villains?.length}
             dataTestId={"total-villains"}
           />
         </Box>
