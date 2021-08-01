@@ -30,28 +30,23 @@ const HeroesPage = () => {
   const [counter, setCounter] = useState("0");
 
   const { loading, data, fetchMore } = useQuery<HeroesData>(GET_HEROES);
-
-  const [removeHero] = useMutation<void>(DELETE_ANTI_HERO_BY_ID, {
-    refetchQueries: [GET_HEROES, "GET_HEROES"],
-  });
-  const [addHero] = useMutation<{ createHero: Hero }>(CREATE_HERO, {
-    update: (apolloCache, { data: response }) => {
-      const data = apolloCache.readQuery<HeroesData>({
-        query: GET_HEROES,
-      });
-      console.log(response);
-      cache.writeQuery({
-        query: GET_HEROES,
-        data: {
-          heroes: [...data.heroes, response.createHero],
-        },
-      });
-    },
-  });
+  const [removeHero] = useMutation<void>(DELETE_ANTI_HERO_BY_ID);
+  const [addHero] = useMutation<{ createHero: Hero }>(CREATE_HERO);
 
   const handleCreate = async (hero: Hero) => {
     await addHero({
       variables: { ...hero },
+      update: (apolloCache, { data: response }) => {
+        const data = apolloCache.readQuery<HeroesData>({
+          query: GET_HEROES,
+        });
+        cache.writeQuery({
+          query: GET_HEROES,
+          data: {
+            heroes: [...data.heroes, response.createHero],
+          },
+        });
+      },
     });
   };
 
@@ -66,7 +61,13 @@ const HeroesPage = () => {
           heroes: [],
         };
         newData.heroes = data?.heroes?.filter((hero) => hero.id != id);
-        cache.writeQuery({ query: GET_HEROES, data: newData.heroes });
+
+        cache.writeQuery({
+          query: GET_HEROES,
+          data: {
+            heroes: [...newData.heroes],
+          },
+        });
       },
     });
   };
@@ -78,9 +79,7 @@ const HeroesPage = () => {
     let newData: HeroesData = {
       heroes: [],
     };
-
     newData.heroes = data?.heroes?.filter((hero) => hero.id != id);
-
     cache.writeQuery({ query: GET_HEROES, data: newData });
   };
 
