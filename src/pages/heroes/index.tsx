@@ -19,7 +19,7 @@ import { GET_HEROES } from "src/graphql-operations/queries";
 import { Hero, HeroesData } from "src/models/client/heroModel";
 import {
   CREATE_HERO,
-  DELETE_ANTI_HERO_BY_ID,
+  DELETE_HERO_BY_ID,
 } from "src/graphql-operations/mutations";
 
 const HeroesPage = () => {
@@ -31,7 +31,7 @@ const HeroesPage = () => {
 
   /*Apollo Client hooks*/
   const { loading, data, fetchMore } = useQuery<HeroesData>(GET_HEROES);
-  const [removeHero] = useMutation<void>(DELETE_ANTI_HERO_BY_ID);
+  const [removeHero] = useMutation<void>(DELETE_HERO_BY_ID);
   const [addHero] = useMutation<{ createHero: Hero }>(CREATE_HERO);
 
   const handleCreate = async (hero: Hero) => {
