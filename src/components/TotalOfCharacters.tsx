@@ -1,7 +1,7 @@
 import React from "react";
 
 type Props = {
-  total: () => number;
+  total: number;
   dataTestId: string;
 };
 
