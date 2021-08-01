@@ -11,11 +11,17 @@ export const cache: InMemoryCache = new InMemoryCache({
           merge(existing, incoming) {
             return incoming;
           },
+          // read() {
+          //   return heroesVar();
+          // },
         },
         villains: {
           merge(existing, incoming) {
             return incoming;
           },
+          // read() {
+          //   return villainsVar();
+          // },
         },
         antiHeroes: {
           merge(existing, incoming) {
@@ -30,11 +36,6 @@ export const cache: InMemoryCache = new InMemoryCache({
   },
 });
 
-export const antiHeroesVar: ReactiveVar<AntiHeroesData> =
-  makeVar<AntiHeroesData>({
-    antiHeroes: [],
-  });
-
 export const heroesVar: ReactiveVar<HeroesData> = makeVar<HeroesData>({
   heroes: [],
 });
@@ -42,3 +43,8 @@ export const heroesVar: ReactiveVar<HeroesData> = makeVar<HeroesData>({
 export const villainsVar: ReactiveVar<VillainsData> = makeVar<VillainsData>({
   villains: [],
 });
+
+export const antiHeroesVar: ReactiveVar<AntiHeroesData> =
+  makeVar<AntiHeroesData>({
+    antiHeroes: [],
+  });
