@@ -1,8 +1,6 @@
-import React, { useEffect, useContext, useState } from "react";
-import TitleBar from "src/components/TitleBar";
-import UpdateUiLabel from "src/components/UpdateUiLabel";
-import FormSubmission from "src/components/FormSubmission";
-import Layout from "src/components/Layout";
+import React, { useState } from "react";
+import { useMutation, useQuery } from "@apollo/client";
+
 import {
   Box,
   Button,
@@ -11,43 +9,86 @@ import {
   useMediaQuery,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import { useMutation, useQuery } from "@apollo/client";
+
+import { cache } from "src/cache";
+import TitleBar from "src/components/TitleBar";
+import UpdateUiLabel from "src/components/UpdateUiLabel";
+import FormSubmission from "src/components/FormSubmission";
+import Layout from "src/components/Layout";
 import { GET_HEROES } from "src/graphql-operations/queries";
 import { Hero, HeroesData } from "src/models/client/heroModel";
 import {
   CREATE_HERO,
   DELETE_ANTI_HERO_BY_ID,
 } from "src/graphql-operations/mutations";
-import { client } from "../_app";
-import { gql } from "apollo-server-micro";
-import { cache } from "../../cache";
 
 const HeroesPage = () => {
   const smallScreen = useMediaQuery("(max-width:600px)");
   const classes = useStyles();
 
+  /*local state*/
+  const [counter, setCounter] = useState("0");
+
   const { loading, data, fetchMore } = useQuery<HeroesData>(GET_HEROES);
 
-  const [removeHero] = useMutation(DELETE_ANTI_HERO_BY_ID, {
+  const [removeHero] = useMutation<void>(DELETE_ANTI_HERO_BY_ID, {
     refetchQueries: [GET_HEROES, "GET_HEROES"],
   });
-  const [addHero] = useMutation(CREATE_HERO, {
+  const [addHero] = useMutation<void>(CREATE_HERO, {
     refetchQueries: [GET_HEROES, "GET_HEROES"],
   });
 
   const handleCreate = async (hero: Hero) => {
-    await addHero({ variables: { ...hero } });
+    await addHero({
+      variables: { ...hero },
+      update: (apolloCache, { data: response }) => {
+        const data = apolloCache.readQuery<HeroesData>({
+          query: GET_HEROES,
+        });
+
+        console.log("response:", JSON.stringify(response, null, 2));
+
+        cache.writeQuery({
+          query: GET_HEROES,
+          data: {
+            heroes: [],
+          },
+        });
+      },
+    });
   };
 
   const handleDelete = async (id: string) => {
-    await removeHero({ variables: { id } });
+    await removeHero({
+      variables: { id },
+      update: (apolloCache) => {
+        const data = apolloCache.readQuery<HeroesData>({
+          query: GET_HEROES,
+        });
+        let newData: HeroesData = {
+          heroes: [],
+        };
+        newData.heroes = data?.heroes?.filter((hero) => hero.id != id);
+        cache.writeQuery({ query: GET_HEROES, data: newData.heroes });
+      },
+    });
   };
 
-  /*local state*/
-  const [counter, setCounter] = useState("0");
+  const handleSoftDelete = (id: string) => {
+    const data = cache.readQuery<HeroesData>({
+      query: GET_HEROES,
+    });
+    let newData: HeroesData = {
+      heroes: [],
+    };
+
+    newData.heroes = data?.heroes?.filter((hero) => hero.id != id);
+
+    cache.writeQuery({ query: GET_HEROES, data: newData });
+  };
 
   return (
-    <Layout title={"Next Mobx - Anti Heroes Page"}>
+    <Layout title={"Next Apollo Client - Heroes Page"}>
       <TitleBar title={"Super Heroes Page"} />
       <FormSubmission postAction={handleCreate} />
       <UpdateUiLabel />
@@ -87,20 +128,7 @@ const HeroesPage = () => {
                   variant={"contained"}
                   color={"secondary"}
                   data-testid={"remove-button"}
-                  onClick={() => {
-                    const data = cache.readQuery<HeroesData>({
-                      query: GET_HEROES,
-                    });
-                    let newData: HeroesData = {
-                      heroes: [],
-                    };
-
-                    newData.heroes = data?.heroes?.filter(
-                      (hero) => hero.id != h.id
-                    );
-
-                    cache.writeQuery({ query: GET_HEROES, data: newData });
-                  }}
+                  onClick={() => handleSoftDelete(h.id)}
                 >
                   Remove
                 </Button>{" "}
@@ -124,11 +152,11 @@ const HeroesPage = () => {
           className={classes.button}
           variant={"contained"}
           color={"primary"}
-          onClick={async () => {
+          onClick={async () =>
             await fetchMore({
               query: GET_HEROES,
-            });
-          }}
+            })
+          }
         >
           Re-fetch
         </Button>

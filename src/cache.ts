@@ -1,13 +1,25 @@
-import { InMemoryCache, makeVar } from "@apollo/client";
+import { InMemoryCache } from "@apollo/client";
 
-export const cache: InMemoryCache = new InMemoryCache();
-
-export const heroesVar = makeVar<any>([]);
-
-export const villainsVar = makeVar<any>({
-  villains: [],
-});
-
-export const antiHeroesVar = makeVar<any>({
-  antiHeroes: [],
+export const cache: InMemoryCache = new InMemoryCache({
+  typePolicies: {
+    Query: {
+      fields: {
+        heroes: {
+          merge(existing, incoming) {
+            return incoming;
+          },
+        },
+        villains: {
+          merge(existing, incoming) {
+            return incoming;
+          },
+        },
+        antiHeroes: {
+          merge(existing, incoming) {
+            return incoming;
+          },
+        },
+      },
+    },
+  },
 });
