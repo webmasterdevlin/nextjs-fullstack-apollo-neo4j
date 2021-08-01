@@ -34,27 +34,24 @@ const HeroesPage = () => {
   const [removeHero] = useMutation<void>(DELETE_ANTI_HERO_BY_ID, {
     refetchQueries: [GET_HEROES, "GET_HEROES"],
   });
-  const [addHero] = useMutation<void>(CREATE_HERO, {
-    refetchQueries: [GET_HEROES, "GET_HEROES"],
+  const [addHero] = useMutation<{ createHero: Hero }>(CREATE_HERO, {
+    update: (apolloCache, { data: response }) => {
+      const data = apolloCache.readQuery<HeroesData>({
+        query: GET_HEROES,
+      });
+      console.log(response);
+      cache.writeQuery({
+        query: GET_HEROES,
+        data: {
+          heroes: [...data.heroes, response.createHero],
+        },
+      });
+    },
   });
 
   const handleCreate = async (hero: Hero) => {
     await addHero({
       variables: { ...hero },
-      update: (apolloCache, { data: response }) => {
-        const data = apolloCache.readQuery<HeroesData>({
-          query: GET_HEROES,
-        });
-
-        console.log("response:", JSON.stringify(response, null, 2));
-
-        cache.writeQuery({
-          query: GET_HEROES,
-          data: {
-            heroes: [],
-          },
-        });
-      },
     });
   };
 
