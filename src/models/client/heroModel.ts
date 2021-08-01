@@ -1,7 +1,11 @@
-export type HeroModel = {
+export interface Hero {
   id: string;
   firstName: string;
   lastName: string;
-  house: string;
   knownAs: string;
-};
+  house: string;
+}
+
+export interface HeroesData {
+  heroes: Hero[];
+}
