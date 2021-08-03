@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
-import { cache } from "src/cache";
+import { cache, totalHeroesVar } from "src/cache";
 import TitleBar from "src/components/TitleBar";
 import UpdateUiLabel from "src/components/UpdateUiLabel";
 import FormSubmission from "src/components/FormSubmission";
@@ -30,7 +30,11 @@ const HeroesPage = () => {
   const [counter, setCounter] = useState("0");
 
   /*Apollo Client hooks*/
-  const { loading, data, fetchMore } = useQuery<HeroesData>(GET_HEROES);
+  const { loading, data, fetchMore } = useQuery<HeroesData>(GET_HEROES, {
+    onCompleted: (result) => {
+      totalHeroesVar(result.heroes.length);
+    },
+  });
   const [removeHero] = useMutation<void>(DELETE_HERO_BY_ID);
   const [addHero] = useMutation<{ createHero: Hero }>(CREATE_HERO);
 
@@ -42,10 +46,13 @@ const HeroesPage = () => {
           query: GET_HEROES,
         });
 
+        const newHeroes = [...heroes, response.createHero];
+        totalHeroesVar(newHeroes.length);
+
         cache.writeQuery({
           query: GET_HEROES,
           data: {
-            heroes: [...heroes, response.createHero],
+            heroes: newHeroes,
           },
         });
       },
@@ -60,10 +67,14 @@ const HeroesPage = () => {
           query: GET_HEROES,
         });
 
+        const newHeroes = heroes.filter((hero) => hero.id != id);
+
+        totalHeroesVar(newHeroes.length);
+
         cache.writeQuery({
           query: GET_HEROES,
           data: {
-            heroes: heroes.filter((hero) => hero.id != id),
+            heroes: newHeroes,
           },
         });
       },
@@ -74,19 +85,21 @@ const HeroesPage = () => {
     const { heroes } = cache.readQuery<HeroesData>({
       query: GET_HEROES,
     });
+    const newHeroes = heroes.filter((hero) => hero.id != id);
 
+    totalHeroesVar(newHeroes.length);
     cache.writeQuery({
       query: GET_HEROES,
       data: {
-        heroes: heroes.filter((hero) => hero.id != id),
+        heroes: newHeroes,
       },
     });
   };
 
-  const refetch = async () =>
-    await fetchMore({
-      query: GET_HEROES,
-    });
+  const refetch = async () => {
+    const { data } = await fetchMore({ query: GET_HEROES });
+    totalHeroesVar(data.heroes.length);
+  };
 
   return (
     <Layout title={"Next Apollo Client - Heroes Page"}>

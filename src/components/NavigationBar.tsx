@@ -4,14 +4,15 @@ import { makeStyles } from "@material-ui/styles";
 import { AppBar, Box, createStyles, Link, Toolbar } from "@material-ui/core";
 
 import TotalOfCharacters from "./TotalOfCharacters";
-import { antiHeroesVar, heroesVar, villainsVar } from "src/cache";
+import { antiHeroesVar, totalHeroesVar, villainsVar } from "src/cache";
 
 const NavigationBar = () => {
   const classes = useStyles();
 
   const antiHeroesReactiveVar = useReactiveVar(antiHeroesVar);
-  const heroesReactiveVar = useReactiveVar(heroesVar);
   const villainsReactiveVar = useReactiveVar(villainsVar);
+
+  const totalHeroes = useReactiveVar(totalHeroesVar);
 
   return (
     <AppBar position="static" style={{ marginBottom: "2rem" }}>
@@ -44,10 +45,7 @@ const NavigationBar = () => {
           >
             Heroes
           </Link>
-          <TotalOfCharacters
-            total={heroesReactiveVar?.heroes?.length}
-            dataTestId={"total-heroes"}
-          />
+          <TotalOfCharacters total={totalHeroes} dataTestId={"total-heroes"} />
         </Box>
         <Box>
           <Link

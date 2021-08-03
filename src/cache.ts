@@ -7,26 +7,20 @@ export const cache: InMemoryCache = new InMemoryCache({
   typePolicies: {
     Query: {
       fields: {
+        getTotalHeroes() {
+          return totalHeroesVar();
+        },
         heroes: {
-          // read(existing, incoming) {
-          //   return heroesVar();
-          // },
           merge(existing, incoming) {
             return incoming;
           },
         },
         villains: {
-          // read(existing) {
-          //   return villainsVar();
-          // },
           merge(existing, incoming) {
             return incoming;
           },
         },
         antiHeroes: {
-          // read(existing) {
-          //   return antiHeroesVar();
-          // },
           merge(existing, incoming) {
             return incoming;
           },
@@ -36,9 +30,7 @@ export const cache: InMemoryCache = new InMemoryCache({
   },
 });
 
-export const heroesVar: ReactiveVar<HeroesData> = makeVar<HeroesData>({
-  heroes: [],
-});
+export const totalHeroesVar = cache.makeVar<number>(0);
 
 export const villainsVar: ReactiveVar<VillainsData> = makeVar<VillainsData>({
   villains: [],
