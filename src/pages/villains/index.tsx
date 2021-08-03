@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
-import { cache } from "src/cache";
+import { cache, totalVillainsVar } from "src/cache";
 import TitleBar from "src/components/TitleBar";
 import UpdateUiLabel from "src/components/UpdateUiLabel";
 import FormSubmission from "src/components/FormSubmission";
@@ -30,22 +30,28 @@ const VillainsPage = () => {
   const [counter, setCounter] = useState("0");
 
   /*Apollo Client hooks*/
-  const { loading, data, fetchMore } = useQuery<VillainsData>(GET_VILLAINS);
+  const { loading, data, fetchMore } = useQuery<VillainsData>(GET_VILLAINS, {
+    onCompleted: ({ villains }) => totalVillainsVar(villains.length),
+  });
   const [removeVillain] = useMutation<void>(DELETE_VILLAIN_BY_ID);
   const [addVillain] = useMutation<{ createVillain: Villain }>(CREATE_VILLAIN);
 
   const handleCreate = async (villain: Villain) => {
     await addVillain({
       variables: villain,
-      update: (apolloCache, { data: response }) => {
+      // Don't destructure the apolloCache. It's not going to work.
+      update: (apolloCache, { data: { createVillain } }) => {
         const { villains } = apolloCache.readQuery<VillainsData>({
           query: GET_VILLAINS,
         });
 
+        const newVillains = [...villains, createVillain];
+        totalVillainsVar(newVillains.length);
+
         cache.writeQuery({
           query: GET_VILLAINS,
           data: {
-            villains: [...villains, response.createVillain],
+            villains: newVillains,
           },
         });
       },
@@ -60,10 +66,13 @@ const VillainsPage = () => {
           query: GET_VILLAINS,
         });
 
+        const newVillains = villains.filter((villain) => villain.id != id);
+        totalVillainsVar(newVillains.length);
+
         cache.writeQuery({
           query: GET_VILLAINS,
           data: {
-            villains: villains.filter((villain) => villain.id != id),
+            villains: newVillains,
           },
         });
       },
@@ -75,18 +84,23 @@ const VillainsPage = () => {
       query: GET_VILLAINS,
     });
 
+    const newVillains = villains.filter((villain) => villain.id != id);
+    totalVillainsVar(newVillains.length);
+
     cache.writeQuery({
       query: GET_VILLAINS,
       data: {
-        villains: villains.filter((villain) => villain.id != id),
+        villains: newVillains,
       },
     });
   };
 
-  const refetch = async () =>
-    await fetchMore({
+  const refetch = async () => {
+    const { data } = await fetchMore({
       query: GET_VILLAINS,
     });
+    totalVillainsVar(data.villains.length);
+  };
 
   return (
     <Layout title={"Next Apollo Client - Villains Page"}>

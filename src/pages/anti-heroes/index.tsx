@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
-import { cache } from "src/cache";
+import { cache, totalAntiHeroesVar } from "src/cache";
 import TitleBar from "src/components/TitleBar";
 import UpdateUiLabel from "src/components/UpdateUiLabel";
 import FormSubmission from "src/components/FormSubmission";
@@ -30,23 +30,31 @@ const AntiHeroesPage = () => {
   const [counter, setCounter] = useState("0");
 
   /*Apollo Client hooks*/
-  const { loading, data, fetchMore } =
-    useQuery<AntiHeroesData>(GET_ANTI_HEROES);
+  const { loading, data, fetchMore } = useQuery<AntiHeroesData>(
+    GET_ANTI_HEROES,
+    {
+      onCompleted: ({ antiHeroes }) => totalAntiHeroesVar(antiHeroes.length),
+    }
+  );
   const [removeHero] = useMutation<void>(DELETE_ANTI_HERO_BY_ID);
   const [addHero] = useMutation<{ createAntiHero: AntiHero }>(CREATE_ANTI_HERO);
 
   const handleCreate = async (antiHero: AntiHero) => {
     await addHero({
       variables: antiHero,
-      update: (apolloCache, { data: response }) => {
+      // Don't destructure the apolloCache. It's not going to work.
+      update: (apolloCache, { data: { createAntiHero } }) => {
         const { antiHeroes } = apolloCache.readQuery<AntiHeroesData>({
           query: GET_ANTI_HEROES,
         });
 
+        const newAntiHeroes = [...antiHeroes, createAntiHero];
+        totalAntiHeroesVar(newAntiHeroes.length);
+
         cache.writeQuery({
           query: GET_ANTI_HEROES,
           data: {
-            antiHeroes: [...antiHeroes, response.createAntiHero],
+            antiHeroes: newAntiHeroes,
           },
         });
       },
@@ -61,10 +69,15 @@ const AntiHeroesPage = () => {
           query: GET_ANTI_HEROES,
         });
 
+        const newAntiHeroes = antiHeroes.filter(
+          (antiHero) => antiHero.id != id
+        );
+        totalAntiHeroesVar(newAntiHeroes.length);
+
         cache.writeQuery({
           query: GET_ANTI_HEROES,
           data: {
-            antiHeroes: antiHeroes.filter((antiHero) => antiHero.id != id),
+            antiHeroes: newAntiHeroes,
           },
         });
       },
@@ -76,18 +89,23 @@ const AntiHeroesPage = () => {
       query: GET_ANTI_HEROES,
     });
 
+    const newAntiHeroes = antiHeroes.filter((antiHero) => antiHero.id != id);
+    totalAntiHeroesVar(newAntiHeroes.length);
+
     cache.writeQuery({
       query: GET_ANTI_HEROES,
       data: {
-        antiHeroes: antiHeroes.filter((antiHero) => antiHero.id != id),
+        antiHeroes: newAntiHeroes,
       },
     });
   };
 
-  const refetch = async () =>
-    await fetchMore({
+  const refetch = async () => {
+    const { data } = await fetchMore({
       query: GET_ANTI_HEROES,
     });
+    totalAntiHeroesVar(data.antiHeroes.length);
+  };
 
   return (
     <Layout title={"Next Apollo Client - AntiHeroes Page"}>

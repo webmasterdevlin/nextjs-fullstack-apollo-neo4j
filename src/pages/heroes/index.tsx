@@ -31,9 +31,7 @@ const HeroesPage = () => {
 
   /*Apollo Client hooks*/
   const { loading, data, fetchMore } = useQuery<HeroesData>(GET_HEROES, {
-    onCompleted: (result) => {
-      totalHeroesVar(result.heroes.length);
-    },
+    onCompleted: ({ heroes }) => totalHeroesVar(heroes.length),
   });
   const [removeHero] = useMutation<void>(DELETE_HERO_BY_ID);
   const [addHero] = useMutation<{ createHero: Hero }>(CREATE_HERO);
@@ -41,12 +39,13 @@ const HeroesPage = () => {
   const handleCreate = async (hero: Hero) => {
     await addHero({
       variables: hero,
-      update: (apolloCache, { data: response }) => {
+      // Don't destructure the apolloCache. It's not going to work.
+      update: (apolloCache, { data: { createHero } }) => {
         const { heroes } = apolloCache.readQuery<HeroesData>({
           query: GET_HEROES,
         });
 
-        const newHeroes = [...heroes, response.createHero];
+        const newHeroes = [...heroes, createHero];
         totalHeroesVar(newHeroes.length);
 
         cache.writeQuery({
@@ -68,7 +67,6 @@ const HeroesPage = () => {
         });
 
         const newHeroes = heroes.filter((hero) => hero.id != id);
-
         totalHeroesVar(newHeroes.length);
 
         cache.writeQuery({
@@ -85,9 +83,10 @@ const HeroesPage = () => {
     const { heroes } = cache.readQuery<HeroesData>({
       query: GET_HEROES,
     });
-    const newHeroes = heroes.filter((hero) => hero.id != id);
 
+    const newHeroes = heroes.filter((hero) => hero.id != id);
     totalHeroesVar(newHeroes.length);
+
     cache.writeQuery({
       query: GET_HEROES,
       data: {
