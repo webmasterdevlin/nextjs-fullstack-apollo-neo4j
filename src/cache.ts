@@ -1,7 +1,4 @@
-import { InMemoryCache, makeVar, ReactiveVar } from "@apollo/client";
-import { AntiHeroesData } from "./models/client/antiHeroModel";
-import { HeroesData } from "./models/client/heroModel";
-import { VillainsData } from "./models/client/villainModel";
+import { InMemoryCache } from "@apollo/client";
 
 export const cache: InMemoryCache = new InMemoryCache({
   typePolicies: {
